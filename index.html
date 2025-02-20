@@ -10,17 +10,15 @@
 <body>
     <div class="container">
         <h2>Base24 Encoder/Decoder</h2>
-        <label for="inputText">Enter text to encode:</label>
-        <input type="text" id="inputText" placeholder="Type here..." />
-        <button onclick="encodeInput()">Encode</button>
-        <h3>Encoded Output:</h3>
-        <p class="output" id="outputText"></p>
 
-        <label for="inputEncodedText">Enter Base24 text to decode:</label>
-        <input type="text" id="inputEncodedText" placeholder="Paste here..." />
+        <textarea id="inputText" rows="4" cols="50" placeholder="Enter text or encoded data..."></textarea><br>
+        <button onclick="encodeInput()">Encode</button>
         <button onclick="decodeInput()">Decode</button>
-        <h3>Decoded Output:</h3>
-        <p class="output" id="decodedText"></p>
+        <br><br>
+        <textarea id="outputText" rows="4" cols="50" placeholder="Output will appear here..." readonly></textarea>
     </div>
+
+
+
 </body>
 </html>

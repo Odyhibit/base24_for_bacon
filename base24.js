@@ -51,7 +51,7 @@
         }
 
         function decodeInput() {
-            let inputText = document.getElementById("inputEncodedText").value;
+            let inputText = document.getElementById("inputText").value;
             let decodedText = fromBase24(inputText);
-            document.getElementById("decodedText").textContent = decodedText;
+            document.getElementById("outputText").textContent = decodedText;
         }
