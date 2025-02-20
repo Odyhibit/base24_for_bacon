@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base24 Encoder/Decoder</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="base24.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Base24 Encoder/Decoder</h2>
+        <label for="inputText">Enter text to encode:</label>
+        <input type="text" id="inputText" placeholder="Type here..." />
+        <button onclick="encodeInput()">Encode</button>
+        <h3>Encoded Output:</h3>
+        <p class="output" id="outputText"></p>
+
+        <label for="inputEncodedText">Enter Base24 text to decode:</label>
+        <input type="text" id="inputEncodedText" placeholder="Paste here..." />
+        <button onclick="decodeInput()">Decode</button>
+        <h3>Decoded Output:</h3>
+        <p class="output" id="decodedText"></p>
+    </div>
+</body>
+</html>
