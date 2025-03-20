@@ -18,9 +18,6 @@ def to_base(p: int, number_base: int) -> str:
     return "".join(symbols[i] for i in p_list)
 
 
-base24_alphabet = "ABCDEFGHIKLMNOPQRSTUWXYZ"
-
-
 def to_base24(message):
     """
     Encode a string to Base24, preserving Unicode characters including emojis.
