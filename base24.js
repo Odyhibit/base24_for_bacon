@@ -1,109 +1,57 @@
-const base24_alphabet = "ABCDEFGHIKLMNOPQRSTUWXYZ";
+ const base24_alphabet = "ABCDEFGHIKLMNOPQRSTUWXYZ";
 
-function toBase24(message) {
-    // Use TextEncoder to convert the string to UTF-8 bytes
-    let encoder = new TextEncoder();
-    let bytes = encoder.encode(message);
-
-    // Convert bytes to a single big integer
-    let bigInt = 0n;
-    for (let i = 0; i < bytes.length; i++) {
-        bigInt = (bigInt << 8n) | BigInt(bytes[i]);
-    }
-
-    // Store the length of bytes for decoding
-    let length = bytes.length;
-
-    // Convert to base24
-    let result = "";
-    if (bigInt === 0n) {
-        return base24_alphabet[0];
-    }
-
-    while (bigInt > 0n) {
-        let remainder = Number(bigInt % 24n);
-        result = base24_alphabet[remainder] + result;
-        bigInt = bigInt / 24n;
-    }
-
-    // Store the length at the beginning (use 2 base24 chars for length)
-    let lengthEncoded = "";
-    let lengthValue = length;
-    for (let i = 0; i < 2; i++) {
-        let remainder = lengthValue % 24;
-        lengthEncoded = base24_alphabet[remainder] + lengthEncoded;
-        lengthValue = Math.floor(lengthValue / 24);
-    }
-
-    return lengthEncoded + result;
-}
-
-function fromBase24(encoded) {
-    if (!encoded || encoded.length < 2) {
-        return "";
-    }
-
-    // Extract length info from the first 2 characters
-    let lengthChars = encoded.substring(0, 2);
-    let length = 0;
-    for (let i = 0; i < lengthChars.length; i++) {
-        let charValue = base24_alphabet.indexOf(lengthChars[i]);
-        if (charValue === -1) {
-            console.error(`Invalid Base24 character: ${lengthChars[i]}`);
-            return "";
+        function getDigits(p, number_base) {
+            let p_list = [];
+            while (p > 0) {
+                let p_digit = p % number_base;
+                p_list.push(p_digit);
+                p = Math.floor(p / number_base);
+            }
+            return p_list.reverse();
         }
-        length = length * 24 + charValue;
-    }
 
-    // Extract the actual encoded data
-    let dataChars = encoded.substring(2);
-
-    // Convert base24 to a big integer
-    let bigInt = 0n;
-    for (let i = 0; i < dataChars.length; i++) {
-        let charValue = base24_alphabet.indexOf(dataChars[i]);
-        if (charValue === -1) {
-            console.error(`Invalid Base24 character: ${dataChars[i]}`);
-            return "";
+        function toBase(p, number_base) {
+            let p_list = getDigits(p, number_base);
+            return p_list.map(i => base24_alphabet[i]).join("");
         }
-        bigInt = bigInt * 24n + BigInt(charValue);
-    }
 
-    // Convert big integer to bytes
-    let bytes = new Uint8Array(length);
-    for (let i = length - 1; i >= 0; i--) {
-        bytes[i] = Number(bigInt & 0xFFn);
-        bigInt = bigInt >> 8n;
-    }
+        function toBase24(message) {
+            let encoder = new TextEncoder();
+            let messageBytes = encoder.encode(message);
+            let base24_code = "";
+            for (let i = 0; i < messageBytes.length; i += 4) {
+                let chunk = messageBytes.slice(i, i + 4);
+                let num = chunk.reduce((acc, byte) => (acc << 8) + byte, 0);
+                base24_code += toBase(num, 24);
+            }
+            return base24_code;
+        }
 
-    // Decode bytes to string
-    return new TextDecoder().decode(bytes);
-}
+        function fromBase24(base24_code) {
+            let decodedBytes = [];
+            for (let i = 0; i < base24_code.length; i += 7) {
+                let value = 0;
+                for (let digit = 0; digit < 7 && i + digit < base24_code.length; digit++) {
+                    value = 24 * value + base24_alphabet.indexOf(base24_code[i + digit]);
+                }
+                let byteArray = [];
+                for (let j = 3; j >= 0; j--) {
+                    byteArray[j] = value & 0xff;
+                    value >>= 8;
+                }
+                decodedBytes.push(...byteArray);
+            }
+            return new TextDecoder().decode(new Uint8Array(decodedBytes)).replace(/\x00/g, '');
+        }
 
-function encodeInput() {
-    let inputText = document.getElementById("inputText").value;
-    let encodedText = toBase24(inputText);
-    document.getElementById("outputText").textContent = encodedText;
-}
+        function encodeInput() {
+            let inputText = document.getElementById("inputText").value;
+            let encodedText = toBase24(inputText);
+            document.getElementById("outputText").textContent = encodedText;
+        }
 
-function decodeInput() {
-    let inputText = document.getElementById("inputText").value;
-    let decodedText = fromBase24(inputText);
-    document.getElementById("outputText").textContent = decodedText;
-}
-
-// Debug function to see what's happening
-function debugEncodeDecode(text) {
-    console.log("Original:", text);
-    let encoder = new TextEncoder();
-    let bytes = encoder.encode(text);
-    console.log("UTF-8 bytes:", Array.from(bytes));
-
-    let encoded = toBase24(text);
-    console.log("Base24 encoded:", encoded);
-
-    let decoded = fromBase24(encoded);
-    console.log("Decoded:", decoded);
-
-    return { original: text, bytes, encoded, decoded };
-}
+        function decodeInput() {
+            let inputText = document.getElementById("inputText").value;
+            let decodedText = fromBase24(inputText);
+            document.getElementById("outputText").textContent = decodedText;
+        }
