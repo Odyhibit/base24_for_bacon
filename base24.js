@@ -51,9 +51,6 @@ function fromBase24(base24_code) {
         }
         decodedBytes.push(...byteArray);
     }
-
-    // Use TextDecoder to properly decode the UTF-8 bytes back to a string
-    // This will correctly handle emoji and other Unicode characters
     decodedBytes = removeNullBytes(decodedBytes);
     const decoder = new TextDecoder('utf-8');
     return decoder.decode(new Uint8Array(decodedBytes).buffer).replace(/\x00/g, '');
