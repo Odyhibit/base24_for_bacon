@@ -83,13 +83,13 @@ function fromBase24(encoded) {
 function encodeInput() {
     let inputText = document.getElementById("inputText").value;
     let encodedText = toBase24(inputText);
-    document.getElementById("outputText").textContent = encodedText;
+    document.getElementById("outputText").value = encodedText;
 }
 
 function decodeInput() {
     let inputText = document.getElementById("inputText").value;
     let decodedText = fromBase24(inputText);
-    document.getElementById("outputText").textContent = decodedText;
+    document.getElementById("outputText").value = decodedText;
 }
 
 // Debug function to see what's happening
